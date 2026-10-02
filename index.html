@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nuestro primer beso 🤍</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #02030d;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  body {
+    color: #fff;
+  }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(87, 32, 110, .18), transparent 38%),
+      linear-gradient(180deg, #02030d 0%, #07051b 100%);
+    opacity: 1;
+    transition: opacity 1.4s ease;
+  }
+
+  .scene.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 2px),
+      radial-gradient(circle, rgba(255,105,190,.75) 0 1.2px, transparent 2.5px);
+    background-size: 92px 110px, 137px 151px;
+    background-position: 10px 5px, 35px 40px;
+    opacity: .55;
+    animation: drift 18s linear infinite;
+  }
+
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-35px); }
+  }
+
+  .heart {
+    position: absolute;
+    color: #ff75bb;
+    text-shadow: 0 0 14px rgba(255, 71, 170, .8);
+    animation: float 4s ease-in-out infinite;
+    opacity: .8;
+  }
+
+  .h1 { top: 17%; left: 12%; font-size: 22px; animation-delay: .2s; }
+  .h2 { top: 25%; right: 13%; font-size: 34px; animation-delay: 1s; }
+  .h3 { bottom: 20%; left: 18%; font-size: 28px; animation-delay: 1.7s; }
+  .h4 { bottom: 13%; right: 16%; font-size: 20px; animation-delay: .8s; }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+  }
+
+  .small {
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: .7;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(42px, 11vw, 76px);
+    font-weight: 400;
+    line-height: 1.02;
+    text-shadow: 0 0 28px rgba(255, 105, 190, .28);
+  }
+
+  .date {
+    margin-top: 18px;
+    font-size: 17px;
+    letter-spacing: 2px;
+    opacity: .75;
+  }
+
+  .intro {
+    max-width: 500px;
+    margin: 30px auto 38px;
+    font-size: 18px;
+    line-height: 1.7;
+    opacity: .82;
+    font-style: italic;
+  }
+
+  button {
+    border: 1px solid rgba(255,255,255,.42);
+    background: rgba(255,255,255,.07);
+    color: white;
+    border-radius: 999px;
+    padding: 15px 28px;
+    font-family: inherit;
+    font-size: 16px;
+    letter-spacing: .5px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 28px rgba(255, 89, 177, .14);
+    transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+  }
+
+  button:hover {
+    transform: scale(1.04);
+    background: rgba(255,255,255,.13);
+    box-shadow: 0 0 35px rgba(255, 89, 177, .24);
+  }
+
+  #videoScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: #000;
+    display: none;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  #videoScreen.visible {
+    display: block;
+  }
+
+  #videoScreen.playing {
+    opacity: 1;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+
+  #blackScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+  }
+
+  #blackScreen.on {
+    opacity: 1;
+  }
+
+  @media (max-width: 600px) {
+    .intro { font-size: 16px; max-width: 340px; }
+    .date { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="home" class="scene">
+  <div class="stars"></div>
+  <div class="heart h1">♡</div>
+  <div class="heart h2">♡</div>
+  <div class="heart h3">♡</div>
+  <div class="heart h4">♡</div>
+
+  <main class="content">
+    <div class="small">Un recuerdo que nunca cambiaría</div>
+    <h1>Nuestro<br>primer beso</h1>
+    <p class="intro">“EL BESO SE HIZO ESPERAR...”</p>
+    <button id="startBtn">Volver al momento ♡</button>
+  </main>
+</div>
+
+<div id="videoScreen">
+  <video id="kissVideo" playsinline preload="auto">
+    <source src="beso.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div id="blackScreen"></div>
+
+<script>
+  const home = document.getElementById('home');
+  const videoScreen = document.getElementById('videoScreen');
+  const video = document.getElementById('kissVideo');
+  const black = document.getElementById('blackScreen');
+  const startBtn = document.getElementById('startBtn');
+
+  let returning = false;
+
+  async function playMoment() {
+    returning = false;
+    home.classList.add('hidden');
+
+    setTimeout(() => {
+      videoScreen.classList.add('visible');
+      requestAnimationFrame(() => videoScreen.classList.add('playing'));
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }, 900);
+  }
+
+  function returnHome() {
+    if (returning) return;
+    returning = true;
+
+    videoScreen.classList.remove('playing');
+
+    setTimeout(() => {
+      videoScreen.classList.remove('visible');
+      video.pause();
+      video.currentTime = 0;
+
+      black.classList.remove('on');
+
+      setTimeout(() => {
+        home.classList.remove('hidden');
+        returning = false;
+      }, 250);
+    }, 900);
+  }
+
+  startBtn.addEventListener('click', playMoment);
+
+  video.addEventListener('ended', () => {
+    // El beso termina, queda todo negro unos instantes
+    videoScreen.classList.remove('playing');
+
+    setTimeout(() => {
+      videoScreen.classList.remove('visible');
+      black.classList.add('on');
+
+      // Después del negro, la pantalla principal vuelve con suavidad
+      setTimeout(() => {
+        black.classList.remove('on');
+        home.classList.remove('hidden');
+        returning = false;
+      }, 1800);
+    }, 1200);
+  });
+
+  // Si se pulsa Esc durante el vídeo, vuelve suavemente a la portada.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && videoScreen.classList.contains('visible')) {
+      returnHome();
+    }
+  });
+</script>
+</body>
+</html>
